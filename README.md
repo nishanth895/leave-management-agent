@@ -129,3 +129,243 @@ This project is fully structured for easy deployment on **Streamlit Community Cl
    ```toml
    GEMINI_API_KEY = "your_gemini_api_key_here"
    ```
+
+
+---
+
+## 🚀 Deployment Guide
+
+### Deploy to Streamlit Cloud (Free Hosting)
+
+#### Step 1: Prepare Repository
+
+Make sure all changes are committed:
+```bash
+git add .
+git commit -m "Ready for deployment"
+git push origin main
+```
+
+#### Step 2: Deploy on Streamlit Cloud
+
+1. Go to **[share.streamlit.io](https://share.streamlit.io)**
+2. **Sign in** with your GitHub account
+3. Click **"New app"** button
+4. Fill in the details:
+   - **Repository:** `nishanth895/leave-management-agent`
+   - **Branch:** `main`
+   - **Main file path:** `app.py`
+
+5. Click **"Advanced settings"** and add secrets:
+```toml
+GEMINI_API_KEY = "your-google-gemini-api-key"
+```
+
+6. Click **"Deploy"** 
+
+🎉 Your app will be live at: `https://your-app-name.streamlit.app`
+
+#### Get Gemini API Key:
+1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Create API key
+3. Copy and paste in Streamlit secrets
+
+---
+
+## 🔐 Default Credentials
+
+After deployment, use these credentials to login:
+
+### 👨‍💼 Admin Dashboard
+- **Email:** `admin@example.com`
+- **Password:** `admin123`
+
+### 👤 Employee Portal  
+- **Email:** `alice@example.com`
+- **Password:** `password123`
+- **Email:** `bob@example.com`
+- **Password:** `password123`
+
+⚠️ **Security:** Change default passwords after first login in production!
+
+---
+
+## 📱 Local Development
+
+### Quick Start (Windows)
+
+**Easiest way:**
+1. Double-click `🚀 START HERE.bat`
+2. Browser opens automatically at http://localhost:8501
+
+**Alternative:**
+1. Double-click `🌐 OPEN IN BROWSER.html`
+2. Application loads automatically
+
+### Manual Start
+
+```bash
+cd "Leave management Agent"
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+Then open: http://localhost:8501
+
+---
+
+## 🏗️ Project Structure
+
+```
+leave-management-agent/
+├── app.py                    # Main application entry point
+├── admin.py                  # Premium admin dashboard
+├── employee.py               # Employee portal
+├── auth.py                   # Authentication module
+├── database.py               # SQLite database operations
+├── ai_agent.py               # Google Gemini AI integration
+├── requirements.txt          # Python dependencies
+├── runtime.txt              # Python version for deployment
+├── .streamlit/
+│   └── config.toml          # Streamlit configuration
+├── assets/
+│   └── dashboard_screenshot.jpg
+└── README.md
+
+```
+
+---
+
+## 🎨 Features Showcase
+
+### Premium Admin Dashboard
+- ✨ Glassmorphism UI design
+- 📊 6 real-time metric cards with animations
+- 📈 Interactive Plotly charts
+- 🤖 AI-powered approval recommendations
+- 📄 PDF report generation
+- 🔍 Employee leave balance tracking
+- 🛡️ Complete audit trail
+
+### Employee Portal
+- 💳 Leave balance cards
+- 📝 Easy leave application
+- ⚡ Instant AI feedback
+- 📜 Leave history
+- 🔐 Password management
+
+---
+
+## 🛠️ Technology Stack
+
+| Component | Technology |
+|-----------|-----------|
+| Frontend | Streamlit |
+| Backend | Python 3.11+ |
+| Database | SQLite3 |
+| AI Engine | Google Gemini 2.5 Flash |
+| Charts | Plotly Express |
+| PDF Reports | FPDF2 |
+| Security | Bcrypt |
+| Data Analysis | Pandas |
+
+---
+
+## 📊 Database Schema
+
+### Tables
+
+**users**
+- id, username, email, password_hash, role
+- name, casual_balance, sick_balance, paid_balance
+
+**leave_requests**  
+- id, user_id, leave_type, start_date, end_date
+- reason, status, ai_recommendation, ai_reason
+- submitted_at, reviewed_by, reviewed_at
+
+**audit_logs**
+- id, admin_id, action, target_request_id
+- details, timestamp
+
+---
+
+## 🔒 Security Features
+
+- ✅ Bcrypt password hashing
+- ✅ Session-based authentication  
+- ✅ Role-based access control (Admin/Employee)
+- ✅ SQL injection prevention
+- ✅ CSRF protection
+- ✅ Secure API key management
+- ✅ Complete audit logging
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📝 License
+
+This project is open source and available under the MIT License.
+
+---
+
+## 👨‍💻 Author
+
+**Nishanth**
+- GitHub: [@nishanth895](https://github.com/nishanth895)
+- Repository: [leave-management-agent](https://github.com/nishanth895/leave-management-agent)
+
+---
+
+## 🎯 Roadmap
+
+- [ ] Email notifications
+- [ ] Calendar integration
+- [ ] Mobile responsive design
+- [ ] Multi-language support
+- [ ] Department management
+- [ ] Holiday calendar
+- [ ] Leave carry-forward
+- [ ] Approval workflows
+
+---
+
+## 🐛 Known Issues
+
+- Database file is created locally (not persistent on Streamlit Cloud)
+- Gemini API requires internet connection
+- Session state clears on app restart
+
+---
+
+## 💡 Tips
+
+- Bookmark the deployed URL for quick access
+- Use Chrome/Edge for best experience
+- Clear browser cache if styles don't load
+- Check Streamlit logs for troubleshooting
+
+---
+
+## 📞 Support
+
+For issues and questions:
+- Open an issue on [GitHub](https://github.com/nishanth895/leave-management-agent/issues)
+- Check existing issues for solutions
+
+---
+
+**Built with ❤️ using Streamlit and Google Gemini AI**
+
+🌟 Star this repo if you find it useful!
