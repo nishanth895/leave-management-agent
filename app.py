@@ -1,12 +1,6 @@
 import streamlit as st
-import database
-import auth
-import employee
-import admin
 
-# ─────────────────────────────────────────────
-# 1. Page Configuration
-# ─────────────────────────────────────────────
+# Set page config first (must be first Streamlit command)
 st.set_page_config(
     page_title="Leave Management Agent | HRMS",
     page_icon="📅",
@@ -14,8 +8,22 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# Import other modules
+try:
+    import database
+    import auth
+    import employee
+    import admin
+except Exception as e:
+    st.error(f"Error importing modules: {e}")
+    st.stop()
+
 # Initialize database
-database.init_db()
+try:
+    database.init_db()
+except Exception as e:
+    st.error(f"Error initializing database: {e}")
+    st.stop()
 
 # ─────────────────────────────────────────────
 # 2. Session State
