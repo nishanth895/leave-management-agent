@@ -1,0 +1,58 @@
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║          LEAVE MANAGEMENT AGENT - HRMS DASHBOARD              ║
+║              How to Start Application                         ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+🎯 EASIEST WAY (RECOMMENDED):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Double-click this file:
+   🚀 START HERE.bat
+
+The browser will automatically open!
+
+📋 OTHER METHODS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Method 1: PowerShell (Most Reliable)
+   • Double-click: START_APP_BROWSER.bat
+   
+Method 2: Python Script
+   • Open Command Prompt in this folder
+   • Run: python run_app.py
+
+Method 3: Direct Streamlit
+   • Open Command Prompt in this folder
+   • Run: streamlit run app.py
+   • Manually open: http://localhost:8501
+
+📌 ACCESS INFORMATION:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+URL: http://localhost:8501
+
+🔐 Admin Login:
+   Email: admin@example.com
+   Password: admin123
+
+👤 Employee Login:
+   Email: alice@example.com
+   Password: password123
+
+❓ TROUBLESHOOTING:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+If browser doesn't open automatically:
+   1. Wait for "Server Ready" message
+   2. Manually open: http://localhost:8501 in any browser
+
+If port 8501 is busy:
+   1. Close any existing Streamlit processes
+   2. Try again
+
+If dependencies missing:
+   pip install -r requirements.txt
+
+💡 TIP: Bookmark http://localhost:8501 in your browser for quick access!
+
+═══════════════════════════════════════════════════════════════

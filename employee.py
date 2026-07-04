@@ -93,110 +93,34 @@ def show_employee_dashboard(user):
     form_state = init_leave_form_state(st.session_state)
 
     with tab_apply:
-        st.markdown("<h3 style='color:#0f172a; font-weight:700; margin-bottom:0.75rem;'>Your Leave Balances</h3>", unsafe_allow_html=True)
+        st.markdown("### 📊 Your Leave Balances")
         
-        # Display balance cards — horizontal row with vibrant colours
-        st.markdown(f"""
-        <style>
-        .leave-cards-row {{
-            display: flex;
-            flex-direction: row;
-            gap: 20px;
-            margin: 16px 0 28px 0;
-            flex-wrap: nowrap;
-        }}
-        .leave-card {{
-            flex: 1;
-            border-radius: 22px;
-            padding: 28px 24px 24px 24px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.13);
-            transition: transform 0.22s ease, box-shadow 0.22s ease;
-            min-width: 0;
-            position: relative;
-            overflow: hidden;
-        }}
-        .leave-card:hover {{
-            transform: translateY(-5px);
-            box-shadow: 0 18px 48px rgba(0,0,0,0.18);
-        }}
-        .leave-card.casual {{
-            background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
-            color: #fff;
-        }}
-        .leave-card.sick {{
-            background: linear-gradient(135deg, #16a34a 0%, #84cc16 100%);
-            color: #fff;
-        }}
-        .leave-card.paid {{
-            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
-            color: #fff;
-        }}
-        .leave-card-icon {{
-            font-size: 2.2rem;
-            margin-bottom: 12px;
-            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18));
-        }}
-        .leave-card-label {{
-            font-size: 0.82rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            opacity: 0.88;
-            margin-bottom: 6px;
-        }}
-        .leave-card-number {{
-            font-size: 3.4rem;
-            font-weight: 900;
-            line-height: 1;
-            margin-bottom: 4px;
-            letter-spacing: -0.03em;
-        }}
-        .leave-card-footer {{
-            font-size: 0.88rem;
-            opacity: 0.82;
-            font-weight: 500;
-        }}
-        .leave-card-blob {{
-            position: absolute;
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.10);
-            bottom: -30px;
-            right: -30px;
-            pointer-events: none;
-        }}
-        </style>
-        <div class="leave-cards-row">
-            <div class="leave-card casual">
-                <div class="leave-card-blob"></div>
-                <div class="leave-card-icon">🏖️</div>
-                <div class="leave-card-label">Casual Leave</div>
-                <div class="leave-card-number">{user_data['casual_balance']}</div>
-                <div class="leave-card-footer">days left</div>
-            </div>
-            <div class="leave-card sick">
-                <div class="leave-card-blob"></div>
-                <div class="leave-card-icon">🏥</div>
-                <div class="leave-card-label">Sick Leave</div>
-                <div class="leave-card-number">{user_data['sick_balance']}</div>
-                <div class="leave-card-footer">days left</div>
-            </div>
-            <div class="leave-card paid">
-                <div class="leave-card-blob"></div>
-                <div class="leave-card-icon">💰</div>
-                <div class="leave-card-label">Paid Leave</div>
-                <div class="leave-card-number">{user_data['paid_balance']}</div>
-                <div class="leave-card-footer">days left</div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        # Display balance cards using Streamlit columns (no HTML)
+        col1, col2, col3 = st.columns(3)
         
-        st.markdown("<hr>", unsafe_allow_html=True)
-        st.markdown("<h3 style='color:#0f172a; font-weight:700; margin-bottom: 0.5rem;'>Request New Leave</h3>", unsafe_allow_html=True)
+        with col1:
+            st.metric(
+                label="🏖️ Casual Leave",
+                value=f"{user_data['casual_balance']} days",
+                delta="Available"
+            )
+        
+        with col2:
+            st.metric(
+                label="🏥 Sick Leave", 
+                value=f"{user_data['sick_balance']} days",
+                delta="Available"
+            )
+        
+        with col3:
+            st.metric(
+                label="💰 Paid Leave",
+                value=f"{user_data['paid_balance']} days",
+                delta="Available"
+            )
+        
+        st.markdown("---")
+        st.markdown("### ✍️ Request New Leave")
         
         with st.form("leave_application_form", clear_on_submit=False):
             leave_type = st.selectbox(

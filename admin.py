@@ -107,11 +107,20 @@ def show_admin_dashboard(user):
         box-shadow: 0 8px 28px rgba(37,99,235,0.38) !important;
     }
     .admin-cards-row {
-        display: flex;
-        flex-direction: row;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
         gap: 20px;
         margin: 16px 0 28px 0;
-        flex-wrap: nowrap;
+    }
+    @media (max-width: 1200px) {
+        .admin-cards-row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (max-width: 768px) {
+        .admin-cards-row {
+            grid-template-columns: 1fr;
+        }
     }
     .admin-card {
         flex: 1;
@@ -150,31 +159,207 @@ def show_admin_dashboard(user):
     </style>
     """, unsafe_allow_html=True)
 
-    # ── Top bar: Back button (left) + Title (right) ──
-    col_back, col_title = st.columns([1, 6])
-    with col_back:
+    # ══════════════════════════════════════════════════
+    # PREMIUM HEADER SECTION
+    # ══════════════════════════════════════════════════
+    st.markdown("""
+    <style>
+    .premium-header {
+        background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%);
+        border-radius: 20px;
+        padding: 24px 32px;
+        margin-bottom: 32px;
+        box-shadow: 0 8px 32px rgba(37, 99, 235, 0.25);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .header-left h1 {
+        color: #ffffff;
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0 0 8px 0;
+        letter-spacing: -0.5px;
+    }
+    .header-left p {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 14px;
+        margin: 0;
+    }
+    .header-right {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+    }
+    .header-icon-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .header-icon-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+    }
+    .profile-badge {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 16px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .profile-badge:hover {
+        background: rgba(255, 255, 255, 0.25);
+    }
+    .profile-avatar-small {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: #ffffff;
+        font-weight: 600;
+    }
+    .profile-info h4 {
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1.2;
+    }
+    .profile-info p {
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 11px;
+        margin: 0;
+        line-height: 1.2;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Header row with Back button and Header content
+    header_col1, header_col2 = st.columns([1, 11])
+    
+    with header_col1:
         st.markdown('<div class="admin-back-btn">', unsafe_allow_html=True)
         if st.button("← Back", key="admin_back_btn"):
             st.session_state.update({'page': 'home', 'logged_in': False, 'user': None, 'role': None})
             st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
-    with col_title:
-        st.markdown(
-            f"<h1 style='font-size:2.2rem; font-weight:800; color:#1e3a8a; margin:0; padding-top:6px;'>"
-            f"Admin Control Center &nbsp;"
-            f"<span style='font-size:1.1rem; color:#7c3aed; font-weight:500;'>Welcome, {user['name']}! 🛡️</span>"
-            f"</h1>",
-            unsafe_allow_html=True
-        )
+    
+    with header_col2:
+        # Premium header with search and profile
+        today = datetime.datetime.now()
+        st.markdown(f"""
+        <div class="premium-header">
+            <div class="header-left">
+                <h1>👋 Welcome back, {user['name']}!</h1>
+                <p>📅 {today.strftime('%A, %B %d, %Y')} • {today.strftime('%I:%M %p')}</p>
+            </div>
+            <div class="header-right">
+                <div class="header-icon-btn" title="Search">🔍</div>
+                <div class="header-icon-btn" title="Notifications">
+                    <span style="position: relative;">🔔
+                        <span style="position: absolute; top: -4px; right: -4px; width: 8px; height: 8px; 
+                              background: #ef4444; border-radius: 50%; border: 2px solid #1e3a8a;"></span>
+                    </span>
+                </div>
+                <div class="profile-badge">
+                    <div class="profile-avatar-small">🛡️</div>
+                    <div class="profile-info">
+                        <h4>{user['name']}</h4>
+                        <p>Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     # Fetch data
     requests = database.get_all_leave_requests()
 
-    # ── Metric Cards (colorful, one row) ──
+    # ══════════════════════════════════════════════════
+    # ENHANCED SUMMARY CARDS WITH ANIMATIONS
+    # ══════════════════════════════════════════════════
+    
+    # Calculate all metrics
     pending_count  = sum(1 for r in requests if r['status'] == 'Pending')
     approved_count = sum(1 for r in requests if r['status'] == 'Approved')
     rejected_count = sum(1 for r in requests if r['status'] == 'Rejected')
     total_count    = len(requests)
+    
+    # Additional metrics
+    employees = database.get_all_employees()
+    total_employees = len(employees)
+    
+    # Employees on leave today
+    today = datetime.datetime.now().date()
+    on_leave_today = sum(1 for r in requests if r['status'] == 'Approved' and 
+                        datetime.datetime.strptime(r['start_date'], '%Y-%m-%d').date() <= today <= 
+                        datetime.datetime.strptime(r['end_date'], '%Y-%m-%d').date())
+    
+    # Average leave usage
+    total_days_used = 0
+    if total_employees > 0:
+        for emp in employees:
+            total_days_used += (15 - emp['casual_balance']) + (10 - emp['sick_balance']) + (20 - emp['paid_balance'])
+        avg_usage = round(total_days_used / total_employees, 1)
+    else:
+        avg_usage = 0
+
+    # Animated counter CSS
+    st.markdown("""
+    <style>
+    @keyframes countUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    .admin-card {
+        animation: countUp 0.6s ease-out forwards;
+    }
+    
+    .admin-card:nth-child(1) { animation-delay: 0.1s; }
+    .admin-card:nth-child(2) { animation-delay: 0.2s; }
+    .admin-card:nth-child(3) { animation-delay: 0.3s; }
+    .admin-card:nth-child(4) { animation-delay: 0.4s; }
+    .admin-card:nth-child(5) { animation-delay: 0.5s; }
+    .admin-card:nth-child(6) { animation-delay: 0.6s; }
+    
+    .admin-card-number {
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    .trend-indicator {
+        display: inline-block;
+        font-size: 0.75rem;
+        margin-left: 8px;
+        padding: 2px 8px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.2);
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
     st.markdown(f"""
     <div class="admin-cards-row">
@@ -182,35 +367,86 @@ def show_admin_dashboard(user):
             <div class="admin-card-blob"></div>
             <div class="admin-card-icon">⏳</div>
             <div class="admin-card-label">Pending Review</div>
-            <div class="admin-card-number">{pending_count}</div>
+            <div class="admin-card-number">{pending_count}<span class="trend-indicator">🔥</span></div>
             <div class="admin-card-footer">needs attention</div>
         </div>
         <div class="admin-card approved">
             <div class="admin-card-blob"></div>
             <div class="admin-card-icon">✅</div>
             <div class="admin-card-label">Approved</div>
-            <div class="admin-card-number">{approved_count}</div>
+            <div class="admin-card-number">{approved_count}<span class="trend-indicator">↗</span></div>
             <div class="admin-card-footer">approved requests</div>
         </div>
         <div class="admin-card rejected">
             <div class="admin-card-blob"></div>
             <div class="admin-card-icon">❌</div>
             <div class="admin-card-label">Rejected</div>
-            <div class="admin-card-number">{rejected_count}</div>
+            <div class="admin-card-number">{rejected_count}<span class="trend-indicator">↘</span></div>
             <div class="admin-card-footer">rejected requests</div>
         </div>
         <div class="admin-card total">
             <div class="admin-card-blob"></div>
             <div class="admin-card-icon">📋</div>
             <div class="admin-card-label">Total Applications</div>
-            <div class="admin-card-number">{total_count}</div>
+            <div class="admin-card-number">{total_count}<span class="trend-indicator">📊</span></div>
             <div class="admin-card-footer">all requests</div>
+        </div>
+        <div class="admin-card total">
+            <div class="admin-card-blob"></div>
+            <div class="admin-card-icon">🏖️</div>
+            <div class="admin-card-label">On Leave Today</div>
+            <div class="admin-card-number">{on_leave_today}<span class="trend-indicator">👥</span></div>
+            <div class="admin-card-footer">employees away</div>
+        </div>
+        <div class="admin-card total">
+            <div class="admin-card-blob"></div>
+            <div class="admin-card-icon">📈</div>
+            <div class="admin-card-label">Avg Usage</div>
+            <div class="admin-card-number">{avg_usage}d<span class="trend-indicator">⚡</span></div>
+            <div class="admin-card-footer">per employee</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("<hr>", unsafe_allow_html=True)
 
+    # ── Leave Balance Overview Section ──
+    st.markdown("### 📊 Employee Leave Balance Overview")
+    
+    # Fetch all employees
+    employees = database.get_all_employees()
+    
+    if employees:
+        # Create columns for leave balance cards (Simple Clean Version)
+        cols_per_row = 3
+        employee_list = list(employees)
+        
+        for i in range(0, len(employee_list), cols_per_row):
+            cols = st.columns(cols_per_row)
+            for j, col in enumerate(cols):
+                if i + j < len(employee_list):
+                    emp = employee_list[i + j]
+                    with col:
+                        # Display using Streamlit's built-in components (No HTML!)
+                        st.markdown(f"#### {emp['name']}")
+                        st.caption(f"@{emp['username']}")
+                        
+                        # Progress bars using Streamlit
+                        st.markdown("**🏖️ Casual Leave**")
+                        st.progress(emp['casual_balance'] / 15)
+                        st.caption(f"{emp['casual_balance']}/15 days")
+                        
+                        st.markdown("**🏥 Sick Leave**")
+                        st.progress(emp['sick_balance'] / 10)
+                        st.caption(f"{emp['sick_balance']}/10 days")
+                        
+                        st.markdown("**💰 Paid Leave**")
+                        st.progress(emp['paid_balance'] / 20)
+                        st.caption(f"{emp['paid_balance']}/20 days")
+                        
+                        st.markdown("---")
+    
+    st.markdown("<hr>", unsafe_allow_html=True)
 
     # Main Tabs
     tab_review, tab_analytics, tab_audit = st.tabs([
@@ -219,108 +455,646 @@ def show_admin_dashboard(user):
         "🛡️ System Audit Logs"
     ])
     
-    # ---------------- TAB 1: PENDING REQUESTS ----------------
+    # ---------------- TAB 1: RECENT LEAVE REQUESTS TABLE ----------------
     with tab_review:
-        st.subheader("Applications Awaiting Decision")
-        pending_requests = [r for r in requests if r['status'] == 'Pending']
+        st.markdown("### 📋 Recent Leave Requests")
         
-        if not pending_requests:
-            st.success("✅ Clean slate! No pending leave applications to review.")
+        if not requests:
+            st.info("📭 No leave requests found in the system.")
         else:
-            for req in pending_requests:
+            # Create table data
+            table_data = []
+            for req in requests:
                 duration = (datetime.datetime.strptime(req['end_date'], "%Y-%m-%d") - datetime.datetime.strptime(req['start_date'], "%Y-%m-%d")).days + 1
                 
-                # Setup custom panel styling for pending requests
-                rec = req['ai_recommendation']
-                rec_color = "#16a34a" if rec == 'Approve' else ("#d97706" if rec == 'Escalate' else "#dc2626")
+                # Status badge styling
+                if req['status'] == 'Approved':
+                    status_badge = '✅ APPROVED'
+                    status_color = '#10b981'
+                elif req['status'] == 'Rejected':
+                    status_badge = '❌ REJECTED'
+                    status_color = '#ef4444'
+                else:
+                    status_badge = '⏳ PENDING'
+                    status_color = '#f59e0b'
                 
-                st.markdown(f"""
-                <div class="review-panel-container">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:18px; font-weight:bold; color:#1e293b;">{req['employee_name']} (@{req['employee_username']})</span>
-                        <span class="status-badge status-pending" style="font-size:12px;">PENDING</span>
+                table_data.append({
+                    'Employee': req['employee_name'],
+                    'Leave Type': req['leave_type'],
+                    'Dates': f"{req['start_date']} to {req['end_date']}",
+                    'Days': duration,
+                    'Status': status_badge,
+                    'AI Rec': req['ai_recommendation'],
+                    'Request ID': req['id']
+                })
+            
+            # Display as table using HTML for better styling with employee photos
+            st.markdown("""
+            <style>
+            .leave-table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+                border: 1px solid #e2e8f0;
+            }
+            .leave-table thead {
+                background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%);
+                color: white;
+            }
+            .leave-table th {
+                padding: 16px 14px;
+                text-align: left;
+                font-size: 12px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.8px;
+            }
+            .leave-table td {
+                padding: 16px 14px;
+                border-bottom: 1px solid #f1f5f9;
+                font-size: 14px;
+                color: #1e293b;
+                vertical-align: middle;
+            }
+            .leave-table tbody tr {
+                transition: all 0.2s ease;
+            }
+            .leave-table tbody tr:hover {
+                background: linear-gradient(90deg, #f8fafc 0%, #f1f5f9 100%);
+                transform: scale(1.01);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            }
+            .employee-cell {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .employee-avatar {
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 16px;
+                font-weight: 600;
+                color: white;
+                flex-shrink: 0;
+                border: 3px solid #f1f5f9;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            }
+            .employee-info h4 {
+                margin: 0;
+                font-size: 14px;
+                font-weight: 600;
+                color: #1e293b;
+            }
+            .employee-info p {
+                margin: 2px 0 0 0;
+                font-size: 12px;
+                color: #64748b;
+            }
+            .status-approved { 
+                background: #d1fae5; 
+                color: #065f46; 
+                font-weight: 700;
+                padding: 6px 14px;
+                border-radius: 20px;
+                font-size: 11px;
+                display: inline-block;
+            }
+            .status-rejected { 
+                background: #fee2e2; 
+                color: #991b1b; 
+                font-weight: 700;
+                padding: 6px 14px;
+                border-radius: 20px;
+                font-size: 11px;
+                display: inline-block;
+            }
+            .status-pending { 
+                background: #fef3c7; 
+                color: #92400e; 
+                font-weight: 700;
+                padding: 6px 14px;
+                border-radius: 20px;
+                font-size: 11px;
+                display: inline-block;
+            }
+            .ai-approve { 
+                color: #10b981; 
+                font-weight: 700;
+                background: #d1fae5;
+                padding: 4px 10px;
+                border-radius: 12px;
+                font-size: 11px;
+            }
+            .ai-reject { 
+                color: #ef4444; 
+                font-weight: 700;
+                background: #fee2e2;
+                padding: 4px 10px;
+                border-radius: 12px;
+                font-size: 11px;
+            }
+            .ai-escalate { 
+                color: #f59e0b; 
+                font-weight: 700;
+                background: #fef3c7;
+                padding: 4px 10px;
+                border-radius: 12px;
+                font-size: 11px;
+            }
+            .action-icon {
+                cursor: pointer;
+                font-size: 18px;
+                transition: transform 0.2s ease;
+                display: inline-block;
+                margin: 0 4px;
+            }
+            .action-icon:hover {
+                transform: scale(1.2);
+            }
+            .days-badge {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 6px 12px;
+                border-radius: 12px;
+                font-weight: 700;
+                font-size: 13px;
+                display: inline-block;
+            }
+            .leave-type-badge {
+                padding: 4px 10px;
+                border-radius: 10px;
+                font-size: 12px;
+                font-weight: 600;
+                display: inline-block;
+            }
+            .type-casual { background: #dbeafe; color: #1e40af; }
+            .type-sick { background: #fee2e2; color: #991b1b; }
+            .type-paid { background: #d1fae5; color: #065f46; }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            # Build HTML table with employee photos
+            table_html = '<table class="leave-table"><thead><tr>'
+            table_html += '<th>Employee</th><th>Type</th><th>Dates</th><th>Days</th><th>Status</th><th>AI Rec</th><th>Actions</th>'
+            table_html += '</tr></thead><tbody>'
+            
+            for idx, row in enumerate(table_data):
+                # Determine status class
+                status_class = 'status-approved' if 'APPROVED' in row['Status'] else ('status-rejected' if 'REJECTED' in row['Status'] else 'status-pending')
+                ai_class = 'ai-approve' if row['AI Rec'] == 'Approve' else ('ai-reject' if row['AI Rec'] == 'Reject' else 'ai-escalate')
+                
+                # Get employee initials for avatar
+                name_parts = row["Employee"].split()
+                initials = ''.join([p[0].upper() for p in name_parts[:2]]) if len(name_parts) >= 2 else row["Employee"][:2].upper()
+                
+                # Leave type badge
+                type_class = f'type-{row["Leave Type"].lower()}'
+                
+                table_html += f'<tr>'
+                # Employee column with photo
+                table_html += f'''<td>
+                    <div class="employee-cell">
+                        <div class="employee-avatar">{initials}</div>
+                        <div class="employee-info">
+                            <h4>{row["Employee"]}</h4>
+                            <p>ID: EMP{1000 + idx}</p>
+                        </div>
                     </div>
-                    <div style="margin-top: 10px; font-size:14px; color:#475569;">
-                        <p><strong>Leave Details:</strong> {req['leave_type']} Leave for <strong>{duration} Day(s)</strong> ({req['start_date']} to {req['end_date']})</p>
-                        <p><strong>Reason:</strong> "{req['reason']}"</p>
-                        <p><strong>Balances:</strong> Casual: {req['casual_balance']}d | Sick: {req['sick_balance']}d | Paid: {req['paid_balance']}d</p>
-                    </div>
+                </td>'''
+                table_html += f'<td><span class="leave-type-badge {type_class}">{row["Leave Type"]}</span></td>'
+                table_html += f'<td style="font-size:12px; color:#64748b;">{row["Dates"]}</td>'
+                table_html += f'<td><span class="days-badge">{row["Days"]}d</span></td>'
+                table_html += f'<td><span class="{status_class}">{row["Status"]}</span></td>'
+                table_html += f'<td><span class="{ai_class}">{row["AI Rec"]}</span></td>'
+                table_html += f'<td><span class="action-icon" title="View Details">👁️</span><span class="action-icon" title="Download">📥</span></td>'
+                table_html += f'</tr>'
+            
+            table_html += '</tbody></table>'
+            st.markdown(table_html, unsafe_allow_html=True)
+            
+            st.markdown("<br>", unsafe_allow_html=True)
+            
+            # Pending requests action section
+            pending_requests = [r for r in requests if r['status'] == 'Pending']
+            
+            if pending_requests:
+                st.markdown("### ⚡ Quick Actions for Pending Requests")
+                
+                # Create two columns: main content (70%) and AI panel (30%)
+                for req in pending_requests:
+                    duration = (datetime.datetime.strptime(req['end_date'], "%Y-%m-%d") - datetime.datetime.strptime(req['start_date'], "%Y-%m-%d")).days + 1
                     
-                    <div class="ai-box" style="border-left: 4px solid {rec_color}; background-color: rgba(248, 250, 252, 0.9);">
-                        <h5 style="margin: 0; color: #1e3a8a; font-size:14px;"><span class="ai-sparkle">✨</span> AI Agent Assessment</h5>
-                        <p style="margin: 5px 0 0 0; font-size:13.5px;">
-                            <strong>AI Recommendation:</strong> <span style="color: {rec_color}; font-weight: bold;">{rec}</span>
-                        </p>
-                        <p style="margin: 3px 0 0 0; font-size:12.5px; color:#475569;"><em>"{req['ai_reason']}"</em></p>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                col1, col2, _ = st.columns([1, 1, 4])
-                
-                # Approve/Reject logic
-                with col1:
-                    if st.button("Approve", key=f"app_{req['id']}", use_container_width=True):
-                        success, msg = database.update_leave_status(req['id'], 'Approved', user['id'], user['username'])
-                        if success:
-                            st.success("Request approved!")
-                            st.rerun()
-                        else:
-                            st.error(f"Failed to approve: {msg}")
-                with col2:
-                    if st.button("Reject", key=f"rej_{req['id']}", use_container_width=True):
-                        success, msg = database.update_leave_status(req['id'], 'Rejected', user['id'], user['username'])
-                        if success:
-                            st.info("Request rejected.")
-                            st.rerun()
-                        else:
-                            st.error(f"Failed to reject: {msg}")
-                
-                st.markdown("<hr style='border: 0.5px dashed #ccc; margin: 20px 0;'>", unsafe_allow_html=True)
+                    with st.expander(f"🔍 {req['employee_name']} - {req['leave_type']} Leave ({duration} days)", expanded=False):
+                        main_col, ai_panel_col = st.columns([2, 1])
+                        
+                        with main_col:
+                            st.markdown(f"""
+                            **Employee:** {req['employee_name']} (@{req['employee_username']})  
+                            **Leave Type:** {req['leave_type']}  
+                            **Duration:** {duration} day(s) ({req['start_date']} to {req['end_date']})  
+                            **Reason:** "{req['reason']}"  
+                            **Current Balances:** Casual: {req['casual_balance']}d | Sick: {req['sick_balance']}d | Paid: {req['paid_balance']}d
+                            """)
+                            
+                            # Action buttons
+                            col1, col2, col3 = st.columns(3)
+                            
+                            with col1:
+                                if st.button("✅ Approve", key=f"app_{req['id']}", use_container_width=True):
+                                    success, msg = database.update_leave_status(req['id'], 'Approved', user['id'], user['username'])
+                                    if success:
+                                        st.success("Request approved!")
+                                        st.rerun()
+                                    else:
+                                        st.error(f"Failed: {msg}")
+                            
+                            with col2:
+                                if st.button("❌ Reject", key=f"rej_{req['id']}", use_container_width=True):
+                                    success, msg = database.update_leave_status(req['id'], 'Rejected', user['id'], user['username'])
+                                    if success:
+                                        st.info("Request rejected.")
+                                        st.rerun()
+                                    else:
+                                        st.error(f"Failed: {msg}")
+                            
+                            with col3:
+                                if st.button("📄 Details", key=f"det_{req['id']}", use_container_width=True):
+                                    st.info("Detailed view coming soon...")
+                        
+                        with ai_panel_col:
+                            # AI Recommendation Panel
+                            rec = req['ai_recommendation']
+                            rec_color = "#10b981" if rec == 'Approve' else ("#f59e0b" if rec == 'Escalate' else "#ef4444")
+                            
+                            # Calculate approval probability
+                            approval_prob = 85 if rec == 'Approve' else (50 if rec == 'Escalate' else 20)
+                            
+                            # Calculate risk score
+                            balance = req['casual_balance'] if req['leave_type'] == 'Casual' else (req['sick_balance'] if req['leave_type'] == 'Sick' else req['paid_balance'])
+                            risk_score = "Low" if balance > duration * 2 else ("Medium" if balance > duration else "High")
+                            risk_color = "#10b981" if risk_score == "Low" else ("#f59e0b" if risk_score == "Medium" else "#ef4444")
+                            
+                            # Check for conflicts (overlapping leaves)
+                            conflicts = database.check_leave_overlap(req['user_id'], req['start_date'], req['end_date'])
+                            has_conflict = len([c for c in conflicts if c['id'] != req['id']]) > 0
+                            
+                            st.markdown(f"""
+                            <div style="background: white; padding: 20px; border-radius: 16px; 
+                                        box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
+                                        border-left: 4px solid {rec_color};">
+                                <div style="text-align: center; margin-bottom: 16px;">
+                                    <div style="font-size: 48px; margin-bottom: 8px;">🤖</div>
+                                    <h3 style="margin: 0; color: #1e293b; font-size: 16px;">AI Analysis</h3>
+                                </div>
+                                
+                                <div style="margin-bottom: 16px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                        <span style="font-size: 12px; font-weight: 600; color: #64748b;">RECOMMENDATION</span>
+                                        <span style="background: {rec_color}22; color: {rec_color}; padding: 4px 10px; 
+                                                     border-radius: 12px; font-size: 11px; font-weight: 700;">{rec}</span>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-bottom: 16px;">
+                                    <div style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 8px;">
+                                        APPROVAL PROBABILITY
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div style="flex: 1; background: #e2e8f0; border-radius: 10px; height: 8px; overflow: hidden;">
+                                            <div style="background: {rec_color}; height: 100%; width: {approval_prob}%; 
+                                                        transition: width 0.5s ease;"></div>
+                                        </div>
+                                        <span style="font-size: 16px; font-weight: 700; color: {rec_color};">{approval_prob}%</span>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-bottom: 16px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="font-size: 11px; font-weight: 600; color: #64748b;">RISK SCORE</span>
+                                        <span style="background: {risk_color}22; color: {risk_color}; padding: 4px 10px; 
+                                                     border-radius: 12px; font-size: 11px; font-weight: 700;">{risk_score}</span>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-bottom: 16px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="font-size: 11px; font-weight: 600; color: #64748b;">CONFLICTS</span>
+                                        <span style="background: {'#fee2e222' if has_conflict else '#d1fae522'}; 
+                                                     color: {'#ef4444' if has_conflict else '#10b981'}; padding: 4px 10px; 
+                                                     border-radius: 12px; font-size: 11px; font-weight: 700;">
+                                            {'⚠️ Yes' if has_conflict else '✓ None'}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-bottom: 16px;">
+                                    <div style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 8px;">
+                                        REMAINING BALANCE
+                                    </div>
+                                    <div style="background: #f8fafc; padding: 10px; border-radius: 10px;">
+                                        <div style="font-size: 24px; font-weight: 700; color: {rec_color}; text-align: center;">
+                                            {balance}d
+                                        </div>
+                                        <div style="font-size: 10px; color: #64748b; text-align: center; margin-top: 4px;">
+                                            after approval: {balance - duration}d
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="background: #f8fafc; padding: 12px; border-radius: 10px; border-left: 3px solid {rec_color};">
+                                    <div style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 6px;">
+                                        AI EXPLANATION
+                                    </div>
+                                    <p style="font-size: 12px; color: #475569; margin: 0; line-height: 1.5;">
+                                        {req['ai_reason']}
+                                    </p>
+                                </div>
+                            </div>
+                            """, unsafe_allow_html=True)
 
-    # ---------------- TAB 2: ANALYTICS ----------------
+    # ---------------- TAB 2: ENHANCED ANALYTICS ----------------
     with tab_analytics:
-        st.subheader("Data-Driven Insights")
+        col_header, col_export = st.columns([4, 1])
+        with col_header:
+            st.markdown("### 📈 Data-Driven Insights & Analytics")
+        with col_export:
+            if st.button("📊 Export Full Report", use_container_width=True, type="primary"):
+                pdf_bytes = generate_pdf_report(requests)
+                st.download_button(
+                    label="💾 Download PDF",
+                    data=pdf_bytes,
+                    file_name=f"full_leave_report_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+                    mime="application/pdf",
+                    use_container_width=True,
+                    key="download_full_report"
+                )
+        
         if not requests:
             st.info("No leave records available to chart.")
         else:
             # Prepare data
             df = pd.DataFrame([dict(r) for r in requests])
             
+            # Row 1: Leave Type Distribution and Status Distribution
             col_chart1, col_chart2 = st.columns(2)
             
             with col_chart1:
-                # 1. Leave Type Distribution (Pie Chart)
+                st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+                st.markdown("#### 🍰 Leave Type Distribution")
+                
                 type_counts = df['leave_type'].value_counts().reset_index()
                 type_counts.columns = ['Leave Type', 'Count']
+                
                 fig_pie = px.pie(
                     type_counts, 
                     values='Count', 
                     names='Leave Type', 
-                    title="Leave Request Types Distribution",
-                    color_discrete_sequence=px.colors.qualitative.Pastel
+                    color_discrete_sequence=['#667eea', '#764ba2', '#f59e0b'],
+                    hole=0.4
                 )
-                fig_pie.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
+                fig_pie.update_traces(
+                    textposition='inside',
+                    textinfo='percent+label',
+                    hovertemplate='<b>%{label}</b><br>Count: %{value}<br>Percentage: %{percent}<extra></extra>'
+                )
+                fig_pie.update_layout(
+                    paper_bgcolor="rgba(0,0,0,0)", 
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    height=350,
+                    margin=dict(l=20, r=20, t=40, b=20),
+                    showlegend=True,
+                    legend=dict(
+                        orientation="h",
+                        yanchor="bottom",
+                        y=-0.2,
+                        xanchor="center",
+                        x=0.5
+                    )
+                )
                 st.plotly_chart(fig_pie, use_container_width=True)
+                st.markdown('</div>', unsafe_allow_html=True)
                 
             with col_chart2:
-                # 2. Status Distribution (Bar Chart)
+                st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+                st.markdown("#### 📊 Status Distribution")
+                
                 status_counts = df['status'].value_counts().reset_index()
                 status_counts.columns = ['Status', 'Count']
+                
                 fig_bar = px.bar(
                     status_counts, 
                     x='Status', 
-                    y='Count', 
-                    title="Leave Applications Status",
+                    y='Count',
                     color='Status',
-                    color_discrete_map={'Pending': '#f59e0b', 'Approved': '#10b981', 'Rejected': '#ef4444'}
+                    color_discrete_map={
+                        'Pending': '#f59e0b', 
+                        'Approved': '#10b981', 
+                        'Rejected': '#ef4444'
+                    },
+                    text='Count'
                 )
-                fig_bar.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
+                fig_bar.update_traces(
+                    texttemplate='%{text}',
+                    textposition='outside',
+                    hovertemplate='<b>%{x}</b><br>Count: %{y}<extra></extra>'
+                )
+                fig_bar.update_layout(
+                    paper_bgcolor="rgba(0,0,0,0)", 
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    height=350,
+                    margin=dict(l=20, r=20, t=40, b=20),
+                    showlegend=False,
+                    xaxis_title="",
+                    yaxis_title="Number of Requests"
+                )
                 st.plotly_chart(fig_bar, use_container_width=True)
+                st.markdown('</div>', unsafe_allow_html=True)
+            
+            st.markdown("<br>", unsafe_allow_html=True)
+            
+            # Row 2: Monthly Trends and Department-wise Leave
+            col_chart3, col_chart4 = st.columns(2)
+            
+            with col_chart3:
+                st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+                st.markdown("#### 📈 Monthly Leave Trends")
+                
+                df['month'] = pd.to_datetime(df['submitted_at']).dt.strftime('%Y-%m')
+                monthly = df.groupby(['month', 'status']).size().reset_index(name='count')
+                
+                fig_line = px.line(
+                    monthly,
+                    x='month',
+                    y='count',
+                    color='status',
+                    markers=True,
+                    color_discrete_map={
+                        'Pending': '#f59e0b',
+                        'Approved': '#10b981',
+                        'Rejected': '#ef4444'
+                    }
+                )
+                fig_line.update_traces(
+                    line=dict(width=3),
+                    marker=dict(size=8),
+                    hovertemplate='<b>%{x}</b><br>%{fullData.name}: %{y}<extra></extra>'
+                )
+                fig_line.update_layout(
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    height=350,
+                    margin=dict(l=20, r=20, t=40, b=20),
+                    xaxis_title="Month",
+                    yaxis_title="Number of Requests",
+                    legend_title="Status",
+                    hovermode='x unified'
+                )
+                st.plotly_chart(fig_line, use_container_width=True)
+                st.markdown('</div>', unsafe_allow_html=True)
+            
+            with col_chart4:
+                st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+                st.markdown("#### 🏢 Leave Type by Status")
+                
+                type_status = df.groupby(['leave_type', 'status']).size().reset_index(name='count')
+                
+                fig_grouped = px.bar(
+                    type_status,
+                    x='leave_type',
+                    y='count',
+                    color='status',
+                    barmode='group',
+                    color_discrete_map={
+                        'Pending': '#f59e0b',
+                        'Approved': '#10b981',
+                        'Rejected': '#ef4444'
+                    },
+                    text='count'
+                )
+                fig_grouped.update_traces(
+                    texttemplate='%{text}',
+                    textposition='outside',
+                    hovertemplate='<b>%{x}</b><br>%{fullData.name}: %{y}<extra></extra>'
+                )
+                fig_grouped.update_layout(
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    height=350,
+                    margin=dict(l=20, r=20, t=40, b=20),
+                    xaxis_title="Leave Type",
+                    yaxis_title="Count",
+                    legend_title="Status"
+                )
+                st.plotly_chart(fig_grouped, use_container_width=True)
+                st.markdown('</div>', unsafe_allow_html=True)
+            
+            st.markdown("<br><hr><br>", unsafe_allow_html=True)
+            
+            # Employee Leave Summary Table
+            st.markdown("### 👥 Employee Leave Summary")
+            
+            employees_data = database.get_all_employees()
+            employee_summary = []
+            
+            for emp in employees_data:
+                emp_requests = [r for r in requests if r['employee_name'] == emp['name']]
+                approved_count = sum(1 for r in emp_requests if r['status'] == 'Approved')
+                pending_count = sum(1 for r in emp_requests if r['status'] == 'Pending')
+                rejected_count = sum(1 for r in emp_requests if r['status'] == 'Rejected')
+                
+                # Calculate total days used
+                total_days_used = 0
+                for r in emp_requests:
+                    if r['status'] == 'Approved':
+                        duration = (datetime.datetime.strptime(r['end_date'], "%Y-%m-%d") - 
+                                  datetime.datetime.strptime(r['start_date'], "%Y-%m-%d")).days + 1
+                        total_days_used += duration
+                
+                employee_summary.append({
+                    'Employee': emp['name'],
+                    'Username': emp['username'],
+                    'Casual': emp['casual_balance'],
+                    'Sick': emp['sick_balance'],
+                    'Paid': emp['paid_balance'],
+                    'Total Used': total_days_used,
+                    'Approved': approved_count,
+                    'Pending': pending_count,
+                    'Rejected': rejected_count
+                })
+            
+            # Display employee summary table
+            st.markdown("""
+            <style>
+            .employee-table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            }
+            .employee-table thead {
+                background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+                color: white;
+            }
+            .employee-table th {
+                padding: 12px 10px;
+                text-align: left;
+                font-size: 11px;
+                font-weight: 700;
+                text-transform: uppercase;
+            }
+            .employee-table td {
+                padding: 10px;
+                border-bottom: 1px solid #e2e8f0;
+                font-size: 13px;
+                color: #1e293b;
+            }
+            .employee-table tbody tr:hover {
+                background: #f0f9ff;
+            }
+            .balance-good { color: #10b981; font-weight: 700; }
+            .balance-low { color: #f59e0b; font-weight: 700; }
+            .balance-critical { color: #ef4444; font-weight: 700; }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            table_html = '<table class="employee-table"><thead><tr>'
+            table_html += '<th>Employee</th><th>Username</th><th>Casual</th><th>Sick</th><th>Paid</th><th>Total Used</th><th>Approved</th><th>Pending</th><th>Rejected</th>'
+            table_html += '</tr></thead><tbody>'
+            
+            for emp in employee_summary:
+                # Determine balance colors
+                casual_class = 'balance-good' if emp['Casual'] > 10 else ('balance-low' if emp['Casual'] > 5 else 'balance-critical')
+                sick_class = 'balance-good' if emp['Sick'] > 5 else ('balance-low' if emp['Sick'] > 2 else 'balance-critical')
+                paid_class = 'balance-good' if emp['Paid'] > 15 else ('balance-low' if emp['Paid'] > 10 else 'balance-critical')
+                
+                table_html += f'<tr>'
+                table_html += f'<td><strong>{emp["Employee"]}</strong></td>'
+                table_html += f'<td style="color:#64748b;">@{emp["Username"]}</td>'
+                table_html += f'<td class="{casual_class}">{emp["Casual"]}/15</td>'
+                table_html += f'<td class="{sick_class}">{emp["Sick"]}/10</td>'
+                table_html += f'<td class="{paid_class}">{emp["Paid"]}/20</td>'
+                table_html += f'<td><strong>{emp["Total Used"]}d</strong></td>'
+                table_html += f'<td style="color:#10b981;"><strong>{emp["Approved"]}</strong></td>'
+                table_html += f'<td style="color:#f59e0b;"><strong>{emp["Pending"]}</strong></td>'
+                table_html += f'<td style="color:#ef4444;"><strong>{emp["Rejected"]}</strong></td>'
+                table_html += f'</tr>'
+            
+            table_html += '</tbody></table>'
+            st.markdown(table_html, unsafe_allow_html=True)
 
     # ---------------- TAB 3: AUDIT LOGS ----------------
     with tab_audit:
-        st.subheader("Admin Security Audit Log Trail")
+        st.markdown("### 🛡️ Admin Security Audit Log Trail")
         st.markdown("Cryptographic-like tracking of all status modifications and system balance changes.")
         
         logs = database.get_audit_logs()
@@ -328,20 +1102,96 @@ def show_admin_dashboard(user):
         if not logs:
             st.info("System audit logs are currently empty. Log modifications will appear here.")
         else:
-            # Styled timeline presentation
+            # PDF Download Button
+            col_title, col_pdf = st.columns([4, 1])
+            with col_pdf:
+                if st.button("📄 Download PDF Report", use_container_width=True, type="primary"):
+                    pdf_bytes = generate_pdf_report(requests)
+                    st.download_button(
+                        label="💾 Save PDF",
+                        data=pdf_bytes,
+                        file_name=f"leave_report_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+                        mime="application/pdf",
+                        use_container_width=True
+                    )
+            
+            st.markdown("<br>", unsafe_allow_html=True)
+            
+            # Create audit logs table
+            st.markdown("""
+            <style>
+            .audit-table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            }
+            .audit-table thead {
+                background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+                color: white;
+            }
+            .audit-table th {
+                padding: 14px 12px;
+                text-align: left;
+                font-size: 12px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+            .audit-table td {
+                padding: 12px;
+                border-bottom: 1px solid #e2e8f0;
+                font-size: 13px;
+                color: #1e293b;
+            }
+            .audit-table tbody tr:hover {
+                background: #f8fafc;
+            }
+            .action-approved { 
+                background: #dcfce7; 
+                color: #166534; 
+                padding: 4px 10px; 
+                border-radius: 6px; 
+                font-weight: 600;
+                font-size: 11px;
+            }
+            .action-rejected { 
+                background: #fee2e2; 
+                color: #991b1b; 
+                padding: 4px 10px; 
+                border-radius: 6px; 
+                font-weight: 600;
+                font-size: 11px;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            # Build HTML table for audit logs
+            table_html = '<table class="audit-table"><thead><tr>'
+            table_html += '<th>Admin Action</th><th>Performed By</th><th>Details</th><th>Target Request ID</th><th>Timestamp</th>'
+            table_html += '</tr></thead><tbody>'
+            
             for log in logs:
                 log_time = datetime.datetime.fromisoformat(log['timestamp']).strftime("%b %d, %Y %I:%M %p")
                 
-                st.markdown(f"""
-                <div class="audit-item">
-                    <div style="display:flex; justify-content:space-between; font-size:13px; color:#475569;">
-                        <span><strong>Admin Action:</strong> <span class="highlight-text">{log['action']}</span></span>
-                        <span>{log_time}</span>
-                    </div>
-                    <div style="margin-top: 5px; font-size:13.5px; color:#1e293b;">
-                        <strong>Performed By:</strong> {log['admin_name']} (@{log['admin_username']})<br>
-                        <strong>Details:</strong> {log['details']}<br>
-                        {f"<strong>Target Request ID:</strong> #{log['target_request_id']}" if log['target_request_id'] else ""}
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+                # Determine action class
+                action_class = ''
+                if 'Approved' in log['action']:
+                    action_class = 'action-approved'
+                elif 'Rejected' in log['action']:
+                    action_class = 'action-rejected'
+                
+                action_display = f'<span class="{action_class}">{log["action"]}</span>' if action_class else log['action']
+                
+                table_html += f'<tr>'
+                table_html += f'<td>{action_display}</td>'
+                table_html += f'<td><strong>{log["admin_name"]}</strong><br><small style="color:#64748b;">@{log["admin_username"]}</small></td>'
+                table_html += f'<td style="max-width:300px;">{log["details"]}</td>'
+                table_html += f'<td><strong>#{log["target_request_id"] if log["target_request_id"] else "N/A"}</strong></td>'
+                table_html += f'<td style="white-space:nowrap; font-size:12px; color:#64748b;">{log_time}</td>'
+                table_html += f'</tr>'
+            
+            table_html += '</tbody></table>'
+            st.markdown(table_html, unsafe_allow_html=True)
