@@ -92,12 +92,16 @@ def init_db():
         ]
 
         for username, email, password, role, name, casual, sick, paid in users_to_seed:
-            salt = bcrypt.gensalt(rounds=12)
-            hashed_pw = bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
-            cursor.execute("""
-            INSERT INTO users (username, email, password_hash, role, name, casual_balance, sick_balance, paid_balance)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """, (username, email, hashed_pw, role, name, casual, sick, paid))
+            try:
+                salt = bcrypt.gensalt(rounds=12)
+                hashed_pw = bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+                cursor.execute("""
+                INSERT OR IGNORE INTO users (username, email, password_hash, role, name, casual_balance, sick_balance, paid_balance)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """, (username, email, hashed_pw, role, name, casual, sick, paid))
+            except Exception as e:
+                # Skip if user already exists
+                continue
 
         conn.commit()
 
